@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <script src="static\js\maze.js"></script>
+    <title>Maze</title>
+  </head>
+  <body onload="onLoad();">
+    <div class = "Maze" id = "Maze">
+      <h2>Maze</h2>
+      <div id="timer">00:00:00</div>
+      <canvas id="mainForm"></canvas>
+    </div>
+    <div class = "MazeWin" id = "MazeWin">
+      {%with message=win%}
+      <h1>{{message}}</h1>
+      {%endwith%}
+      <p>You successfully completed the maze.</p>
+      <ul>
+        <li><a href="/logout" class="logout_button">Logout</a></li>
+        <li><a href="/maze" class="general_button">Replay!</a></li>
+        <li><a href="/" class="general_button">Home</a></li>
+      </ul>
+    </div>
+  </body>
+</html>

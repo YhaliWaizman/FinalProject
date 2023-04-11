@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Register</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<div class="container">
+		<h1>Register</h1>
+
+		{% with messages = get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+				<ul class="messages">
+					{% for category, message in messages %}
+						{% if category == 'alert' %}
+							<li class="alert">{{ message }}</li>
+						{% elif category == 'positive_alert' %}
+							<li class="positive-alert">{{ message }}</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+
+		<form method="POST" novalidate>
+			{{ form.csrf_token }}
+
+			{% for error in form.name.errors %}
+				<p class="alert">{{ error }}</p>
+			{% endfor %}
+
+			<label for="name">Name:</label>
+			{{ form.name(class_="form-control", autofocus=True) }}
+			{% for error in form.email.errors %}
+				<p class="alert">{{ error }}</p>
+			{% endfor %}
+
+			<label for="email">Email:</label>
+			{{ form.email(class_="form-control") }}
+			
+			{% for error in form.password.errors %}
+				<p class="alert">{{ error }}</p>
+			{% endfor %}
+
+			<label for="password">Password:</label>
+			{{ form.password(class_="form-control") }}
+
+			{% for error in form.confirm_password.errors %}
+				<p class="alert">{{ error }}</p>
+			{% endfor %}
+
+			<label for="confirm_password">Confirm Password:</label>
+			{{ form.confirm_password(class_="form-control") }}
+
+			<button type="submit" class="btn btn-primary">Register</button>
+		</form>
+		<p>Already have an account? <a href="{{ url_for('login') }}">Log in here</a>.</p>
+	</div>
+</body>
+</html>

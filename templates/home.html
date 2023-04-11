@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Home Page</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<header>
+		<main>
+			<div class="center">
+				{% with name = Username %}
+					<h1>Welcome, {{ name }}!</h1>
+			  	{% endwith %}
+			</div>
+		</main>
+		<nav>
+			<ul>
+				<li><a href="/maze" class="general_button">Maze</a></li>
+				<li><a href="/update" class="general_button">Update Account</a></li>
+				{% if session.logged_in %}
+				<li><a href="/logout" class="logout_button">Logout</a></li>
+				<li><a href="/deleteuser" class="logout_button">Delete User</a></li>
+				{% else %}
+				<li><a href="/login" class="general_button">Login</a></li>
+				{% endif %}
+			</ul>
+		</nav>
+		<table class="styled-table">
+			<thead>
+			  <tr>
+				<th>Username</th>
+				<th>Score</th>
+				<th>Best Time</th>
+			  </tr>
+			</thead>
+			<tbody>
+			  {% for user in users %}
+				<tr>
+					<td>{{ user.name }}</td>
+					<td>{{ user.score }}</td>
+					{% if user.bestTime==999999999 %}
+					<td>No Time Yet</td>
+					{% else %}
+					<td>{{ user.bestTime  }} sec</td>
+					{% endif %}
+				</tr>
+			  {% endfor %}
+			</tbody>
+		  </table>
+		  
+	</header>
+</body>
+</html>

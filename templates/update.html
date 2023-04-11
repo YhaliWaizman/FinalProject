@@ -20,7 +20,8 @@
 				</ul>
 			{% endif %}
 		{% endwith %}
-        <form method="POST" action="{{ url_for('update_user') }}">
+        <form method="POST" action="{{ url_for('update_user') }}">		
+			{{ form.csrf_token }}
             <label for="username">New Username:</label>
             {%with name=username%}
                 <input type="text" name="name" id="name" value = {{name}} ><br><br>

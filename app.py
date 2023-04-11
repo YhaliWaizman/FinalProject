@@ -10,7 +10,7 @@ from wtforms.validators import InputRequired, Email, Length, EqualTo, Validation
 import re
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import zxcvbn
+import bcrypt
 
 
 app = Flask(__name__)
@@ -75,7 +75,7 @@ def register():
         name = form.name.data
         email = form.email.data
         password = form.password.data
-        hashed_password = generate_password_hash(password)
+        hashed_password = bcrypt.hashpw(password)
 
         if not form.validate_on_submit():
             form.confirm_password.errors.append(
@@ -109,7 +109,7 @@ def login():
         password = request.form['password']
 
         user = mongo.db.users.find_one({'email': email})
-        if user and check_password_hash(user['password'], password):
+        if user and bcrypt.checkpw(user['password'], password):
             session['user'] = user['email']
             session['logged_in'] = True
             session['score'] = user['score']
@@ -142,6 +142,8 @@ def maze():
 
 @ app.route("/deleteuser")
 def delete_user():
+    session["logged_in"] = False
+    session.pop("username", None)
     mongo.db.users.find_one_and_delete({'email': session['user']})
     return redirect(url_for("login"))
 

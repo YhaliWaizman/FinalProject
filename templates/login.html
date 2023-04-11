@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Register</title>
+	<title>Login</title>
 	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 	<div class="container">
-		<h1>Update User</h1>
-        {% with messages = get_flashed_messages(with_categories=true) %}
+		<h1>Login</h1>
+		{% with messages = get_flashed_messages(with_categories=true) %}
 			{% if messages %}
 				<ul class="messages">
 					{% for category, message in messages %}
@@ -20,18 +20,17 @@
 				</ul>
 			{% endif %}
 		{% endwith %}
-        <form method="POST" action="{{ url_for('update_user') }}">		
+		<form method="POST">
 			{{ form.csrf_token }}
-            <label for="username">New Username:</label>
-            {%with name=username%}
-                <input type="text" name="name" id="name" value = {{name}} ><br><br>
-            {%endwith%}
-            <label for="email">New Email:</label>
-            {%with email=mail%}
-                <input type="email" name="email" id="email" value = {{email}}><br><br>
-            {%endwith%}
-			<button type="submit" class="btn btn-primary">Update</button>
-        </form>
+			<label for="email">Email:</label>
+			<input type="email" name="email" required>
+
+			<label for="password">Password:</label>
+			<input type="password" name="password" required>
+
+			<button type="submit">Login</button>
+		</form>
+		<p>Don't have an account yet? <a href="{{ url_for('register') }}">Register here</a>.</p>
 	</div>
 </body>
 </html>

@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from config import db, SECRET_KEY
 import random
 from flask_wtf import FlaskForm
+from flask_wtf.csrf import CSRFProtect
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Email, Length, EqualTo, ValidationError, Regexp
 import re
@@ -15,7 +16,10 @@ import bcrypt
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
+# name and init in main the database
 mongo = db
+# Create an instance of the CSRFProtect class
+csrf = CSRFProtect(app)
 password_pattern = re.compile(
     r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$')
 # Configuration of limiter extension, limits the amount of requests per client

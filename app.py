@@ -5,26 +5,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from config import db, SECRET_KEY
 import random
 from flask_wtf import FlaskForm
-from flask_wtf.csrf import CSRFProtect
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Email, Length, EqualTo, ValidationError, Regexp
 import re
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import bcrypt
 
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
-# name and init in main the database
 mongo = db
-# Create an instance of the CSRFProtect class
-csrf = CSRFProtect(app)
 password_pattern = re.compile(
     r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$')
 # Configuration of limiter extension, limits the amount of requests per client
-limiter = Limiter(get_remote_address, app=app, default_limits=[
-                  "200 per day", "50 per hour"])
 
 
 def password_strength_check(form, field):
@@ -79,7 +72,7 @@ def register():
         name = form.name.data
         email = form.email.data
         password = form.password.data
-        hashed_password = bcrypt.hashpw(password)
+        hashed_password = generate_password_hash(password)
 
         if not form.validate_on_submit():
             form.confirm_password.errors.append(
@@ -113,7 +106,7 @@ def login():
         password = request.form['password']
 
         user = mongo.db.users.find_one({'email': email})
-        if user and bcrypt.checkpw(user['password'], password):
+        if user and check_password_hash(user['password'], password):
             session['user'] = user['email']
             session['logged_in'] = True
             session['score'] = user['score']
@@ -123,7 +116,7 @@ def login():
         else:
             flash('Incorrect email or password, please try again.', 'alert')
 
-    return render_template('login.html')
+    return render_template('login.html', form=RegistrationForm)
 
 
 @ app.route("/logout")
@@ -147,8 +140,9 @@ def maze():
 @ app.route("/deleteuser")
 def delete_user():
     session["logged_in"] = False
-    session.pop("username", None)
     mongo.db.users.find_one_and_delete({'email': session['user']})
+    session.pop("username", None)
+    flash("Your account has been deleted.", 'positive-alert')
     return redirect(url_for("login"))
 
 
@@ -175,7 +169,7 @@ def update_user():
         flash("Your profile has been updated.", 'positive-alert')
         return redirect(url_for("home"))
 
-    return render_template('update.html', username=session["name"], mail=session['user'])
+    return render_template('update.html', username=session["name"], mail=session['user'], form=RegistrationForm)
 
 
 if __name__ == "__main__":

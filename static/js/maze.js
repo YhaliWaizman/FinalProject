@@ -38,8 +38,8 @@ class Timer {
 class Player {
 
   constructor() {
-    this.col = 0;
-    this.row = 0;
+    this.col = 18;
+    this.row = 18;
   }
 
 }

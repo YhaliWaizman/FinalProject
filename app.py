@@ -8,12 +8,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Email, Length, EqualTo, ValidationError, Regexp
 import re
-from mailjet_rest import Client
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import smtplib
-from email.mime.text import MIMEText
-
+from Emailer import SendMessage
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -24,11 +21,58 @@ user_pattern = re.compile(r'^[^,\"\';\\\{\}\<\>]{1,}$')
 limiter = Limiter(app, default_limits=["200 per day", "50 per hour"])
 limiter._key_func = get_remote_address
 
+
 subject = "MAZEGAME"
-body = "the maze game site is up! you're welcome to come and play!"
+body = """<!DOCTYPE html>
+<html>
+<head>
+	<title>Server Status Update</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			background-color: #e6b7fc;
+		}
+		a {
+			color: #cfcecebe;
+		}
+		.container {
+			width: 400px;
+			margin: 50px auto;
+			padding: 20px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background-color: #4e059699;
+			color: #ffffff;
+		}
+		.general_button{
+			padding: 10px;
+			font-size: 18px;
+			background-color: #9b2fb6;
+			color: white;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			margin-top: 20px;
+			text-decoration: none;
+		}
+		.general_button:hover {
+			background-color: #84239c;
+		}
+		.center{
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="center">Server Status Update</h1>
+		<p class="center">The server is up and running.</p>
+		<button class="general_button"><a href="/login">Join Server</a></button>
+	</div>
+</body>
+</html>"""
 sender = "mazegamecyber@gmail.com"
-recipients = mongo.db.find({}, {"_id": 0, "email": 1})
-password = "215625328"
 
 
 
@@ -57,16 +101,6 @@ class RegistrationForm(FlaskForm):
                                      InputRequired(), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Register')
 
-
-def send_email(subject, body, sender, recipients, password):
-    msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = sender
-    msg['To'] = ', '.join(recipients)
-    smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    smtp_server.login(sender, password)
-    smtp_server.sendmail(sender, recipients, msg.as_string())
-    smtp_server.quit()
 
 @ app.route('/submit', methods=['POST'])
 def submit():
@@ -215,5 +249,9 @@ def update_user():
     return render_template('update.html', username=session["name"], mail=session['user'], form=RegistrationForm)
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+recipients = db.db.users.find({}, {"_id": 0, "email": 1})
+lrecipients = list(recipients)
+for recipient in lrecipients:
+    emailrecp = recipient["email"]
+    SendMessage(sender, emailrecp, subject, body)
+app.run(debug=True)

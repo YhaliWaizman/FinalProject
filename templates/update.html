@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Register</title>
+	<title>Update</title>
 	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -13,7 +13,7 @@
 					{% for category, message in messages %}
 						{% if category == 'alert' %}
 							<li class="alert">{{ message }}</li>
-						{% elif category == 'positive_alert' %}
+						{% elif category == 'positive-alert' %}
 							<li class="positive-alert">{{ message }}</li>
 						{% endif %}
 					{% endfor %}
@@ -24,11 +24,11 @@
 			{{ form.csrf_token }}
             <label for="username">New Username:</label>
             {%with name=username%}
-                <input type="text" name="name" id="name" value = {{name}} ><br><br>
+                <input required type="text" name="name" id="name" value = {{name}}><br><br>
             {%endwith%}
             <label for="email">New Email:</label>
             {%with email=mail%}
-                <input type="email" name="email" id="email" value = {{email}}><br><br>
+                <input required type="email" name="email" id="email" value = {{email}}><br><br>
             {%endwith%}
 			<button type="submit" class="btn btn-primary">Update</button>
         </form>

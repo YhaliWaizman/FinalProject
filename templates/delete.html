@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2 class="center">Are you sure you want to delete your account?</h2>
+            <form method="POST">
+                <div class="form-group">
+                    <button type="submit" name="confirmation" value="yes" class="btn btn-primary">Yes</button>
+                    <button type="submit" name="confirmation" value="no" class="btn btn-primary">No</button>
+                </div>
+            </form>
+    </div>
+</body>
+</html>

@@ -13,6 +13,19 @@
 			  	{% endwith %}
 			</div>
 		</main>
+		{% with messages = get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+				<ul class="messages">
+					{% for category, message in messages %}
+						{% if category == 'alert' %}
+							<li class="alert">{{ message }}</li>
+						{% elif category == 'positive-alert' %}
+							<li class="positive-alert">{{ message }}</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
 		<nav>
 			<ul>
 				<li><a href="/maze" class="general_button">Maze</a></li>

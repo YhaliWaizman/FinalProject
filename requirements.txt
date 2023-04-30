@@ -1,0 +1,9 @@
+flask
+flask_pymongo
+pymongo.errors 
+werkzeug.security  
+random
+flask_wtf  
+wtforms  
+wtforms.validators
+re

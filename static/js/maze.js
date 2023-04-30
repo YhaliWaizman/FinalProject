@@ -1,4 +1,10 @@
-let ctx, canvas, maze, mazeHeight = 20 , mazeWidth = 20, player, timer;
+let ctx,
+  canvas,
+  maze,
+  mazeHeight = 20,
+  mazeWidth = 20,
+  player,
+  timer;
 class Timer {
   constructor() {
     this.startTime = null;
@@ -23,29 +29,29 @@ class Timer {
   //updates the HTML element that will display the timer. The elapsed time is updated by 1000 milliseconds every time this method is called.
   updateTimer() {
     let seconds = Math.floor((this.elapsedTime % (1000 * 60)) / 1000);
-    let minutes = Math.floor((this.elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-    let hours = Math.floor((this.elapsedTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let minutes = Math.floor(
+      (this.elapsedTime % (1000 * 60 * 60)) / (1000 * 60)
+    );
+    let hours = Math.floor(
+      (this.elapsedTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
     this.timerElement.innerHTML = `${hours}:${minutes}:${seconds}`;
     this.elapsedTime += 1000;
   }
-  getelapsedTime(){
-    return this.elapsedTime
+  getelapsedTime() {
+    return this.elapsedTime;
   }
 }
-
 
 //keeps track of player info(position inside the maze)
 class Player {
-
   constructor() {
-    this.col = 18;
-    this.row = 18;
+    this.col = 0;
+    this.row = 0;
   }
-
 }
 
 class MazeCell {
-
   constructor(col, row) {
     this.col = col;
     this.row = row;
@@ -57,13 +63,10 @@ class MazeCell {
 
     this.visited = false;
   }
-
 }
 
 class Maze {
-
   constructor(cols, rows, cellSize) {
-
     this.backgroundColor = "#ffffff";
     this.cols = cols;
     this.endColor = "#07e02b";
@@ -74,12 +77,10 @@ class Maze {
 
     this.cells = [];
 
-    this.generate()
-
+    this.generate();
   }
   //The generate() method generates the maze
   generate() {
-
     mazeHeight = this.rows * this.cellSize;
     mazeWidth = this.cols * this.cellSize;
 
@@ -116,7 +117,10 @@ class Maze {
           dir = Math.floor(Math.random() * 4);
           switch (dir) {
             case 0:
-              if (currCell.col !== (this.cols - 1) && !this.cells[currCell.col + 1][currCell.row].visited) {
+              if (
+                currCell.col !== this.cols - 1 &&
+                !this.cells[currCell.col + 1][currCell.row].visited
+              ) {
                 currCell.eastWall = false;
                 nextCell = this.cells[currCell.col + 1][currCell.row];
                 nextCell.westWall = false;
@@ -124,7 +128,10 @@ class Maze {
               }
               break;
             case 1:
-              if (currCell.row !== 0 && !this.cells[currCell.col][currCell.row - 1].visited) {
+              if (
+                currCell.row !== 0 &&
+                !this.cells[currCell.col][currCell.row - 1].visited
+              ) {
                 currCell.northWall = false;
                 nextCell = this.cells[currCell.col][currCell.row - 1];
                 nextCell.southWall = false;
@@ -132,7 +139,10 @@ class Maze {
               }
               break;
             case 2:
-              if (currCell.row !== (this.rows - 1) && !this.cells[currCell.col][currCell.row + 1].visited) {
+              if (
+                currCell.row !== this.rows - 1 &&
+                !this.cells[currCell.col][currCell.row + 1].visited
+              ) {
                 currCell.southWall = false;
                 nextCell = this.cells[currCell.col][currCell.row + 1];
                 nextCell.northWall = false;
@@ -140,7 +150,10 @@ class Maze {
               }
               break;
             case 3:
-              if (currCell.col !== 0 && !this.cells[currCell.col - 1][currCell.row].visited) {
+              if (
+                currCell.col !== 0 &&
+                !this.cells[currCell.col - 1][currCell.row].visited
+              ) {
                 currCell.westWall = false;
                 nextCell = this.cells[currCell.col - 1][currCell.row];
                 nextCell.eastWall = false;
@@ -151,14 +164,13 @@ class Maze {
           if (foundNeighbor) {
             stack.push(nextCell);
           }
-        } while (!foundNeighbor)
+        } while (!foundNeighbor);
       } else {
         currCell = stack.pop();
       }
     }
 
     this.redraw();
-
   }
   //checks if there are still unvisited cells left in the maze
   hasUnvisited() {
@@ -173,19 +185,29 @@ class Maze {
   }
   //checks if there are still unvisited cells left near the given cell
   hasUnvisitedNeighbor(mazeCell) {
-    return ((mazeCell.col !== 0               && !this.cells[mazeCell.col - 1][mazeCell.row].visited) ||
-            (mazeCell.col !== (this.cols - 1) && !this.cells[mazeCell.col + 1][mazeCell.row].visited) ||
-            (mazeCell.row !== 0               && !this.cells[mazeCell.col][mazeCell.row - 1].visited) ||
-            (mazeCell.row !== (this.rows - 1) && !this.cells[mazeCell.col][mazeCell.row + 1].visited));
+    return (
+      (mazeCell.col !== 0 &&
+        !this.cells[mazeCell.col - 1][mazeCell.row].visited) ||
+      (mazeCell.col !== this.cols - 1 &&
+        !this.cells[mazeCell.col + 1][mazeCell.row].visited) ||
+      (mazeCell.row !== 0 &&
+        !this.cells[mazeCell.col][mazeCell.row - 1].visited) ||
+      (mazeCell.row !== this.rows - 1 &&
+        !this.cells[mazeCell.col][mazeCell.row + 1].visited)
+    );
   }
   //draw the maze on a canvas using the HTML5 Canvas API
   redraw() {
-
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(0, 0, mazeHeight, mazeWidth);
 
     ctx.fillStyle = this.endColor;
-    ctx.fillRect((this.cols - 1) * this.cellSize, (this.rows - 1) * this.cellSize, this.cellSize, this.cellSize);
+    ctx.fillRect(
+      (this.cols - 1) * this.cellSize,
+      (this.rows - 1) * this.cellSize,
+      this.cellSize,
+      this.cellSize
+    );
 
     ctx.strokeStyle = this.mazeColor;
     ctx.strokeRect(0, 0, mazeHeight, mazeWidth);
@@ -220,10 +242,13 @@ class Maze {
     }
 
     ctx.fillStyle = this.playerColor;
-    ctx.fillRect((player.col * this.cellSize) + 2, (player.row * this.cellSize) + 2, this.cellSize - 4, this.cellSize - 4);
-
+    ctx.fillRect(
+      player.col * this.cellSize + 2,
+      player.row * this.cellSize + 2,
+      this.cellSize - 4,
+      this.cellSize - 4
+    );
   }
-
 }
 
 function onClick(event) {
@@ -263,20 +288,18 @@ function onKeyDown(event) {
   }
   if (player.col === maze.cols - 1 && player.row === maze.rows - 1) {
     const maze = document.getElementById("Maze");
-    const win =  document.getElementById("MazeWin");
+    const win = document.getElementById("MazeWin");
     maze.style.visibility = "hidden";
     win.style.visibility = "visible";
     timer.stopTimer();
     const eTime = timer.getelapsedTime();
-    fetch(`http://localhost:5000/submit?eTime=${eTime}`, {method: "POST"});
-  }
-  else{
+    fetch(`http://localhost:5000/submit?eTime=${eTime}`, { method: "POST" });
+  } else {
     maze.redraw();
   }
 }
 
 function onLoad() {
-
   canvas = document.getElementById("mainForm");
   ctx = canvas.getContext("2d");
   timer = new Timer();
@@ -286,5 +309,4 @@ function onLoad() {
 
   document.addEventListener("keydown", onKeyDown);
   document.getElementById("generate").addEventListener("click", onClick);
-
 }

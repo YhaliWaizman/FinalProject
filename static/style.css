@@ -191,29 +191,3 @@ canvas {
 	font-size: 14px;
 	color: #f44336;
 }
-
-#password-strength-meter {
-    height: 10px;
-    margin-top: 10px;
-    background-color: #eee;
-}
-
-.strength-very-weak {
-    background-color: #ff4136;
-}
-
-.strength-weak {
-    background-color: #ff851b;
-}
-
-.strength-medium {
-    background-color: #ffdc00;
-}
-
-.strength-strong {
-    background-color: #2ecc40;
-}
-
-.strength-very-strong {
-    background-color: #0074d9;
-}

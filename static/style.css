@@ -67,6 +67,13 @@ button:hover {
 	color: white;
 	border-radius: 5px;
 }
+.info{
+	margin-bottom: 20px;
+	padding: 10px;
+	background-color: #0973c9;
+	color: white;
+	border-radius: 5px;
+}
 .logout_button {
 	background-color: #ff2d2d;
 	color: white;

@@ -59,14 +59,3 @@ def CreateMessage(sender, to, subject, msgHtml, msgPlain):
     body = {'raw': raw}
     return body
 
-
-def main():
-    to = "nevetshalva@gmail.com"
-    sender = "mazegamecyber@gmail.com"
-    subject = "sex"
-    msgHtml = "NIGG-"
-    SendMessage(sender, to, subject, msgHtml)
-
-
-if __name__ == '__main__':
-    main()
